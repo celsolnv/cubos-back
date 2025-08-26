@@ -16,6 +16,16 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  },
+  "include": [
+    "src/**/*.ts", "test/**/*.ts" 
+, "src/modules/web/restaurants/dto/list-restaurants.dto.ts"  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
