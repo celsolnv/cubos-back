@@ -7,6 +7,7 @@ import {
   FindServiceMode,
   FindServiceResult,
 } from 'src/types/modules/find-service-mode';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,8 @@ export class UsersService {
     });
 
     const user = new User();
+    createUserDto.password = await hash(createUserDto.password, 12);
+
     user.fromDto(createUserDto);
 
     const createdUser = await this.userRepository.create(user);

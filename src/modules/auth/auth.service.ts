@@ -42,6 +42,10 @@ export class AuthService {
       throw new AppException('Email ou senha inválidos', 401);
     }
 
+    userAttempt.attempts = 0;
+    userAttempt.blockedUntil = null;
+    await this.loginAttemptsRepository.update(userAttempt);
+
     return this.returnLoginSuccess(user);
   }
 

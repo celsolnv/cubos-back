@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { CreateLoginAttemptsDto } from '../dto/create-login-attempts.dto';
 
 @Entity('login_attempts')
@@ -14,6 +20,20 @@ export class LoginAttempt {
 
   @Column({ type: 'timestamp', nullable: true, name: 'blocked_until' })
   blockedUntil: Date | null;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 
   public fromDto(dto: CreateLoginAttemptsDto): void {
     this.userId = dto.userId;

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 
 @Entity('users')
@@ -26,14 +32,14 @@ export class User {
   })
   password?: string | null;
 
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
-  @Column({
+  @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
