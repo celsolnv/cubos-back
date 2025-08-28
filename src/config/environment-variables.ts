@@ -25,6 +25,10 @@ export type EnvironmentVariables = {
   SMTP_USER: string;
   SMTP_PASS: string;
   SHOULD_SEND_EMAILS: boolean;
+  AWS_REGION: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_S3_BUCKET: string;
 };
 
 const environmentVariables: EnvironmentVariables = {
@@ -47,6 +51,10 @@ const environmentVariables: EnvironmentVariables = {
   FRONT_BACKOFFICE_URL: requireProcessEnv('FRONT_BACKOFFICE_URL'),
   SHOULD_SEND_EMAILS:
     requireProcessEnv('SHOULD_SEND_EMAILS').toLowerCase() === 'true',
+  AWS_REGION: requireProcessEnv('AWS_REGION'),
+  AWS_ACCESS_KEY_ID: requireProcessEnv('AWS_ACCESS_KEY_ID'),
+  AWS_SECRET_ACCESS_KEY: requireProcessEnv('AWS_SECRET_ACCESS_KEY'),
+  AWS_S3_BUCKET: requireProcessEnv('AWS_S3_BUCKET'),
 };
 
 export { environmentVariables };

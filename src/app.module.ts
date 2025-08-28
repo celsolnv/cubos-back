@@ -7,6 +7,8 @@ import { UserModule } from './modules/users/users.module';
 import { JwtAuthGuard } from './modules/auth/strategy/jwt-auth.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppExceptionFilter } from './exception-filters/app-exception/app-exception.filter';
+import { MoviesModule } from './modules/movies/movies.module';
+import { S3Module } from './modules/s3/s3.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { AppExceptionFilter } from './exception-filters/app-exception/app-except
     }),
     AuthModule,
     UserModule,
+    S3Module,
+    MoviesModule,
   ],
 
   providers: [
