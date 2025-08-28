@@ -90,11 +90,23 @@ export class CreateMovieTable1756378986962 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'banner',
+            name: 'banner_url',
             type: 'varchar',
             length: '500',
             isNullable: true,
           },
+          {
+            name: 'banner_key',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+          },
+          {
+            name: 'banner_expires_at',
+            type: 'timestamp',
+            isNullable: true,
+          },
+
           {
             name: 'genres',
             type: 'movie_genre_enum[]',

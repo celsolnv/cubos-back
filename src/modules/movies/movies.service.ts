@@ -9,35 +9,87 @@ import {
   FindServiceMode,
   FindServiceResult,
 } from 'src/types/modules/find-service-mode';
-
+import { S3Service } from '../s3/s3.service';
+import * as moment from 'moment';
+import { RepositoryListing } from '@/types/modules/repository-listing-mode';
+import { ListedMovieDto } from './dto';
 @Injectable()
 export class MoviesService {
-  constructor(private movieRepository: AbstractMoviesRepository) {}
+  constructor(
+    private movieRepository: AbstractMoviesRepository,
+    private s3Service: S3Service,
+  ) {}
 
-  async create(createMovieDto: CreateMovieDto) {
+  async create(createMovieDto: CreateMovieDto, file?: Express.Multer.File) {
     const movie = new Movie();
     movie.fromDto(createMovieDto);
+    if (!movie.bannerUrl && file) {
+      const { url, key, expiresAt } = await this.uploadBanner(file);
+      movie.bannerUrl = url;
+      movie.bannerKey = key;
+      movie.bannerExpiresAt = expiresAt;
+    }
 
     const createdMovie = await this.movieRepository.create(movie);
     return createdMovie;
   }
 
-  listAll(params: ListAllMoviesDto) {
-    return this.movieRepository.listAll(params);
+  async listAll(
+    params: ListAllMoviesDto,
+  ): Promise<RepositoryListing<ListedMovieDto>> {
+    const query = await this.movieRepository.listAll(params);
+    const movies = query[0].map(async (movie) => {
+      if (movie.bannerKey) {
+        const hasExpired =
+          movie.bannerExpiresAt &&
+          moment(movie.bannerExpiresAt).isBefore(moment());
+        if (hasExpired) {
+          const { url, expiresAt } = await this.s3Service.getPresignedUrl(
+            movie.bannerKey,
+          );
+          movie.bannerUrl = url;
+          movie.bannerExpiresAt = expiresAt;
+          this.update(movie.id, movie);
+        }
+      }
+      return movie;
+    });
+
+    const moviesListed = await Promise.all(movies);
+
+    return [moviesListed, query[1]];
   }
 
-  async update(id: string, updateMovieDto: UpdateMovieDto) {
+  async update(
+    id: string,
+    updateMovieDto: UpdateMovieDto,
+    file?: Express.Multer.File,
+  ) {
     const movie = await this.findById({ id, mode: 'ensureExistence' });
 
     movie.fromDto(updateMovieDto);
+    if (file) {
+      // vamos verificar se o banner já existe
+      if (movie.bannerKey) {
+        await this.s3Service.deleteObject(movie.bannerKey);
+      }
+      const { url, key, expiresAt } = await this.uploadBanner(file);
+      movie.bannerUrl = url;
+      movie.bannerKey = key;
+      movie.bannerExpiresAt = expiresAt;
+    }
+
     return await this.movieRepository.update(movie);
   }
 
   async remove(id: string) {
-    await this.findById({
+    const movie = await this.findById({
       id,
       mode: 'ensureExistence',
     });
+    if (movie.bannerKey) {
+      await this.s3Service.deleteObject(movie.bannerKey);
+    }
 
     await this.movieRepository.remove(id);
   }
@@ -63,21 +115,9 @@ export class MoviesService {
     return existingMovie as FindServiceResult<Movie, Mode>;
   }
 
-  async getStats() {
-    // TODO: Implementar lógica para buscar estatísticas dos filmes
-    // Por enquanto retorna dados mockados
-    return {
-      totalMovies: 0,
-      releasedMovies: 0,
-      inProductionMovies: 0,
-      highestBudgetMovie: { name: '', budget: 0 },
-      highestRevenueMovie: { name: '', revenue: 0 },
-      highestRatedMovie: { name: '', rating: 0 },
-      longestMovie: { name: '', duration: 0 },
-      popularGenres: [],
-      prolificDirectors: [],
-      averageRating: 0,
-      averageDuration: 0,
-    };
+  private async uploadBanner(file: Express.Multer.File) {
+    const { key } = await this.s3Service.uploadImage(file);
+    const { url, expiresAt } = await this.s3Service.getPresignedUrl(key);
+    return { url, key, expiresAt };
   }
 }

@@ -37,6 +37,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: false, // switch to true to remove unknown properties
+      transform: true,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         const constraints = getAllValidationErrorConstraints(validationErrors);
         return new AppException(constraints.join('; '), 400);

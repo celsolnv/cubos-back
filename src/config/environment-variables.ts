@@ -29,6 +29,7 @@ export type EnvironmentVariables = {
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
   AWS_S3_BUCKET: string;
+  AWS_S3_PRESIGNED_URL_EXPIRES_IN: number;
 };
 
 const environmentVariables: EnvironmentVariables = {
@@ -55,6 +56,9 @@ const environmentVariables: EnvironmentVariables = {
   AWS_ACCESS_KEY_ID: requireProcessEnv('AWS_ACCESS_KEY_ID'),
   AWS_SECRET_ACCESS_KEY: requireProcessEnv('AWS_SECRET_ACCESS_KEY'),
   AWS_S3_BUCKET: requireProcessEnv('AWS_S3_BUCKET'),
+  AWS_S3_PRESIGNED_URL_EXPIRES_IN: +requireProcessEnv(
+    'AWS_S3_PRESIGNED_URL_EXPIRES_IN',
+  ),
 };
 
 export { environmentVariables };

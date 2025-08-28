@@ -21,6 +21,7 @@
     "typeorm": "ts-node  ./node_modules/typeorm/cli -d ./src/infra/database/typeorm/typeorm.config.ts",
     "typeorm:migration-create": "typeorm migration:create ./src/infra/database/typeorm/migrations/$npm_config_name",
     "mg-run": "npm run typeorm migration:run",
+    "mg-revert": "npm run typeorm migration:revert",
     "mg-create": "npm run typeorm:migration-create",
     "typeorm:migration-revet": "npm run typeorm migration:revert"
   },

@@ -9,6 +9,8 @@ import {
   HttpCode,
   Query,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -18,7 +20,6 @@ import PaginationWrapper from 'src/utils/pagination/pagination-wrapper';
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
   ApiParam,
   ApiBody,
   ApiQuery,
@@ -36,6 +37,7 @@ import { Request } from 'express';
 import { ListedMovieDto } from './dto/listed-movie.dto';
 import { MovieDetailDto } from './dto/movie-detail.dto';
 import { MovieStatsDto } from './dto/movie-stats.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('movies')
 @Controller('movies')
@@ -43,7 +45,6 @@ import { MovieStatsDto } from './dto/movie-stats.dto';
 export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
 
-  @Post()
   @ApiOperation({
     summary: 'Criar um novo filme',
     description:
@@ -66,8 +67,13 @@ export class MoviesController {
   @ApiForbiddenResponse({
     description: 'Usuário sem permissão para criar filmes',
   })
-  create(@Body() createMovieDto: CreateMovieDto) {
-    return this.movieService.create(createMovieDto);
+  @Post()
+  @UseInterceptors(FileInterceptor('banner'))
+  create(
+    @Body() createMovieDto: CreateMovieDto,
+    @UploadedFile() banner?: Express.Multer.File,
+  ) {
+    return this.movieService.create(createMovieDto, banner);
   }
 
   @Get()
@@ -149,22 +155,6 @@ export class MoviesController {
     });
   }
 
-  @Get('stats')
-  @ApiOperation({
-    summary: 'Obter estatísticas dos filmes',
-    description: 'Retorna estatísticas gerais sobre a coleção de filmes',
-  })
-  @ApiOkResponse({
-    description: 'Estatísticas retornadas com sucesso',
-    type: MovieStatsDto,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Usuário não autenticado',
-  })
-  async getStats() {
-    return this.movieService.getStats();
-  }
-
   @Get(':id')
   @ApiOperation({
     summary: 'Buscar filme por ID',
@@ -192,7 +182,6 @@ export class MoviesController {
     return this.movieService.findById({ id });
   }
 
-  @Put(':id')
   @ApiOperation({
     summary: 'Atualizar filme',
     description: 'Atualiza as informações de um filme existente',
@@ -222,8 +211,15 @@ export class MoviesController {
   @ApiForbiddenResponse({
     description: 'Usuário sem permissão para atualizar filmes',
   })
-  update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.movieService.update(id, updateMovieDto);
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('banner'))
+  update(
+    @Param('id') id: string,
+    @Body() updateMovieDto: UpdateMovieDto,
+    @UploadedFile() banner?: Express.Multer.File,
+  ) {
+    console.log(banner);
+    return this.movieService.update(id, updateMovieDto, banner);
   }
 
   @HttpCode(204)

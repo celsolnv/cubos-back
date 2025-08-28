@@ -55,7 +55,19 @@ export class ListedMovieDto {
     description: 'URL do banner/poster do filme',
     example: 'https://example.com/banner.jpg',
   })
-  banner?: string;
+  bannerUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'Chave do banner/poster do filme',
+    example: 'banner.jpg',
+  })
+  bannerKey?: string;
+
+  @ApiPropertyOptional({
+    description: 'Data de expiração do banner/poster do filme',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  bannerExpiresAt?: Date;
 
   @ApiPropertyOptional({
     description: 'Gêneros do filme',

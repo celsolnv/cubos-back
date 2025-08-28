@@ -1,10 +1,4 @@
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  DeleteDateColumn,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Entity,
-} from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { CreateMovieDto } from '../dto/create-movie.dto';
 import { UpdateMovieDto } from '../dto/update-movie.dto';
 import { MovieStatus, MovieGenre } from '../constants';
@@ -66,10 +60,11 @@ export class Movie {
 
   @Column({
     type: 'varchar',
+    name: 'banner_url',
     length: 500,
     nullable: true,
   })
-  banner?: string;
+  bannerUrl?: string;
 
   @Column({
     type: 'text',
@@ -114,8 +109,20 @@ export class Movie {
   })
   updatedAt: Date;
 
-  @DeleteDateColumn({ select: false })
-  deletedAt?: Date;
+  @Column({
+    name: 'banner_expires_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  bannerExpiresAt?: Date;
+
+  @Column({
+    name: 'banner_key',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  bannerKey?: string;
 
   public fromDto(dto: CreateMovieDto | UpdateMovieDto): void {
     this.name = dto.name;
@@ -125,7 +132,7 @@ export class Movie {
     if (dto.releaseDate) this.releaseDate = new Date(dto.releaseDate);
     this.budget = dto.budget;
     this.revenue = dto.revenue;
-    this.banner = dto.banner;
+    this.bannerUrl = dto.bannerUrl;
     this.genres = dto.genres;
     this.director = dto.director;
     this.durationMinutes = dto.durationMinutes;

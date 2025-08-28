@@ -1,3 +1,4 @@
+// src/movies/dto/create-movie.dto.ts
 import {
   IsNotEmpty,
   IsOptional,
@@ -10,8 +11,10 @@ import {
   Max,
   IsUrl,
   IsEnum,
+  MaxLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type, Transform } from 'class-transformer';
 import { MovieStatus, MovieGenre } from '../constants';
 
 export class CreateMovieDto {
@@ -33,7 +36,7 @@ export class CreateMovieDto {
   })
   @IsOptional()
   @IsString()
-  @Length(0, 255)
+  @MaxLength(255)
   originalName?: string;
 
   @ApiPropertyOptional({
@@ -56,7 +59,7 @@ export class CreateMovieDto {
   status?: MovieStatus;
 
   @ApiPropertyOptional({
-    description: 'Data de lançamento do filme',
+    description: 'Data de lançamento do filme (ISO date string)',
     example: '2019-04-26',
   })
   @IsOptional()
@@ -67,9 +70,11 @@ export class CreateMovieDto {
     description: 'Orçamento do filme em dólares',
     example: 356000000,
     minimum: 0,
+    type: Number,
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'budget must be a number' })
   @Min(0)
   budget?: number;
 
@@ -77,9 +82,11 @@ export class CreateMovieDto {
     description: 'Receita do filme em dólares',
     example: 2797800564,
     minimum: 0,
+    type: Number,
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'revenue must be a number' })
   @Min(0)
   revenue?: number;
 
@@ -90,16 +97,36 @@ export class CreateMovieDto {
   })
   @IsOptional()
   @IsUrl()
-  @Length(0, 500)
-  banner?: string;
+  @MaxLength(500)
+  bannerUrl?: string;
 
   @ApiPropertyOptional({
-    description: 'Gêneros do filme',
+    description: 'Gêneros do filme (array ou CSV string: "ACTION,DRAMA")',
     example: [MovieGenre.ACTION, MovieGenre.ADVENTURE, MovieGenre.DRAMA],
     enum: MovieGenre,
     isArray: true,
   })
   @IsOptional()
+  @Transform(({ value }) => {
+    if (!value && value !== 0) return undefined;
+    // Se já for array (ex.: múltiplos campos form-data), retorna como está
+    if (Array.isArray(value)) return value;
+    // Se for string CSV, separa por vírgula
+    if (typeof value === 'string') {
+      // aceita tanto "A,B" quanto '["A","B"]'
+      try {
+        if (value.trim().startsWith('[')) {
+          return JSON.parse(value);
+        }
+        // eslint-disable-next-line no-empty
+      } catch {}
+      return value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+    return value;
+  })
   @IsArray()
   @IsEnum(MovieGenre, { each: true })
   genres?: MovieGenre[];
@@ -111,16 +138,18 @@ export class CreateMovieDto {
   })
   @IsOptional()
   @IsString()
-  @Length(0, 255)
+  @MaxLength(255)
   director?: string;
 
   @ApiPropertyOptional({
     description: 'Duração do filme em minutos',
     example: 181,
     minimum: 1,
+    type: Number,
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'durationMinutes must be a number' })
   @Min(1)
   durationMinutes?: number;
 
@@ -129,9 +158,11 @@ export class CreateMovieDto {
     example: 8.4,
     minimum: 0.0,
     maximum: 10.0,
+    type: Number,
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'rating must be a number' })
   @Min(0.0)
   @Max(10.0)
   rating?: number;

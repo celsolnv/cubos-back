@@ -9,6 +9,7 @@ import {
 import { randomUUID } from 'crypto';
 import { environmentVariables } from '@/config/environment-variables';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import AppException from '@/exception-filters/app-exception/app-exception';
 
 export type UploadResult = {
   key: string;
@@ -81,21 +82,25 @@ export class S3Service {
     }
   }
 
-  /**
-   * Gera uma URL assinada para download (GET) do objeto.
-   * expiresIn em segundos (padrão 3600 = 1h).
-   */
-  async getPresignedUrl(key: string, expiresIn = 3600): Promise<string> {
+  async getPresignedUrl(
+    key: string,
+  ): Promise<{ url: string; expiresAt: Date }> {
     if (!key) {
-      throw new HttpException('Key é obrigatória', HttpStatus.BAD_REQUEST);
+      throw new AppException('Key é obrigatória', HttpStatus.BAD_REQUEST);
     }
 
     try {
+      const expiresIn = environmentVariables.AWS_S3_PRESIGNED_URL_EXPIRES_IN;
       const cmd = new GetObjectCommand({ Bucket: this.bucketName, Key: key });
-      return await getSignedUrl(this.s3, cmd, { expiresIn });
+      const url = await getSignedUrl(this.s3, cmd, { expiresIn });
+      const expiresAt = new Date(
+        Date.now() +
+          environmentVariables.AWS_S3_PRESIGNED_URL_EXPIRES_IN * 1000, // Convert to milliseconds
+      );
+      return { url, expiresAt };
     } catch (error) {
       this.logger.error('Erro gerando presigned URL', error as any);
-      throw new HttpException(
+      throw new AppException(
         'Erro ao gerar URL assinada',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
