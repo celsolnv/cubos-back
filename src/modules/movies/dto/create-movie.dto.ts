@@ -166,4 +166,48 @@ export class CreateMovieDto {
   @Min(0.0)
   @Max(10.0)
   rating?: number;
+
+  @ApiPropertyOptional({
+    description: 'Idioma do filme',
+    example: 'pt-BR',
+    maxLength: 10,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
+  language?: string;
+
+  @ApiPropertyOptional({
+    description: 'Popularidade do filme',
+    example: 1000,
+    minimum: 0,
+    type: Number,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'popularity must be a number' })
+  @Min(0)
+  popularity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Número de votos do filme',
+    example: 50000,
+    minimum: 0,
+    type: Number,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'votes must be a number' })
+  @Min(0)
+  votes?: number;
+
+  @ApiPropertyOptional({
+    description: 'Tagline do filme',
+    example: 'Uma tagline inspiradora',
+    maxLength: 255,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  tagline?: string;
 }

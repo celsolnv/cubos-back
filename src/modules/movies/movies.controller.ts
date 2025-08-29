@@ -218,7 +218,6 @@ export class MoviesController {
     @Body() updateMovieDto: UpdateMovieDto,
     @UploadedFile() banner?: Express.Multer.File,
   ) {
-    console.log(banner);
     return this.movieService.update(id, updateMovieDto, banner);
   }
 

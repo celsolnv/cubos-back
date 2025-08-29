@@ -70,6 +70,11 @@ export class Movie {
     type: 'text',
     array: true,
     nullable: true,
+    default: () => "'{}'",
+    transformer: {
+      to: (val: MovieGenre[] | null) => val,
+      from: (val: string | null) => val?.slice(1, -1).split(','),
+    },
   })
   genres?: MovieGenre[];
 
@@ -94,6 +99,25 @@ export class Movie {
     nullable: true,
   })
   rating?: number;
+
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+  })
+  language?: string;
+
+  @Column({
+    type: 'bigint',
+    nullable: true,
+  })
+  popularity?: number;
+
+  @Column({
+    type: 'bigint',
+    nullable: true,
+  })
+  votes?: number;
 
   @Column({
     name: 'created_at',
@@ -124,6 +148,14 @@ export class Movie {
   })
   bannerKey?: string;
 
+  @Column({
+    name: 'tagline',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  tagline?: string;
+
   public fromDto(dto: CreateMovieDto | UpdateMovieDto): void {
     this.name = dto.name;
     this.originalName = dto.originalName;
@@ -137,5 +169,9 @@ export class Movie {
     this.director = dto.director;
     this.durationMinutes = dto.durationMinutes;
     this.rating = dto.rating;
+    this.language = dto.language;
+    this.popularity = dto.popularity;
+    this.votes = dto.votes;
+    this.tagline = dto.tagline;
   }
 }

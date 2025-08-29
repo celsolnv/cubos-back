@@ -69,7 +69,6 @@ export class MoviesService {
 
     movie.fromDto(updateMovieDto);
     if (file) {
-      // vamos verificar se o banner já existe
       if (movie.bannerKey) {
         await this.s3Service.deleteObject(movie.bannerKey);
       }

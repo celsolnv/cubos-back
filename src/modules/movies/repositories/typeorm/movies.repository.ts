@@ -38,7 +38,7 @@ export class MoviesTypeormRepository extends AbstractMoviesRepository {
     }
 
     if (query) {
-      movieQb.andWhere('unaccent(movie.name) ILIKE unaccent(:query)', {
+      movieQb.andWhere('movie.name ILIKE :query', {
         query: `%${query}%`,
       });
     }
