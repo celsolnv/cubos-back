@@ -107,4 +107,8 @@ export class UsersService {
 
     return existingUser as FindServiceResult<User, Mode>;
   }
+
+  async findAllUsers() {
+    return this.userRepository.findAll();
+  }
 }

@@ -8,4 +8,5 @@ export abstract class AbstractUsersRepository {
     email: string;
     withPassword?: boolean;
   }): Promise<User | null>;
+  abstract findAll(): Promise<User[]>;
 }

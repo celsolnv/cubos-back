@@ -70,4 +70,8 @@ export class UsersTypeormRepository extends AbstractUsersRepository {
       select: selectFields,
     });
   }
+
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
 }

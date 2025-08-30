@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import AppException from 'src/exception-filters/app-exception/app-exception';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -15,6 +15,7 @@ import { RepositoryListing } from '@/types/modules/repository-listing-mode';
 import { ListedMovieDto } from './dto';
 @Injectable()
 export class MoviesService {
+  private readonly logger = new Logger(MoviesService.name);
   constructor(
     private movieRepository: AbstractMoviesRepository,
     private s3Service: S3Service,

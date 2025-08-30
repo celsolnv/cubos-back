@@ -19,11 +19,8 @@ export type EnvironmentVariables = {
   API_URL: string;
   FRONT_URL: string;
   FRONT_BACKOFFICE_URL: string;
-  SMTP_SERVICE?: string;
-  SMTP_HOST: string;
-  SMTP_PORT: number;
-  SMTP_USER: string;
-  SMTP_PASS: string;
+  RESEND_API_KEY: string;
+  MAIL_FROM: string;
   SHOULD_SEND_EMAILS: boolean;
   AWS_REGION: string;
   AWS_ACCESS_KEY_ID: string;
@@ -43,11 +40,8 @@ const environmentVariables: EnvironmentVariables = {
     | 'remote',
   API_URL: requireProcessEnv('API_URL'),
   SHOW_DOCS: requireProcessEnv('SHOW_DOCS').toLowerCase() === 'true',
-  SMTP_SERVICE: process.env.SMTP_SERVICE,
-  SMTP_HOST: requireProcessEnv('SMTP_HOST'),
-  SMTP_PORT: +requireProcessEnv('SMTP_PORT'),
-  SMTP_USER: requireProcessEnv('SMTP_USER'),
-  SMTP_PASS: requireProcessEnv('SMTP_PASS'),
+  RESEND_API_KEY: requireProcessEnv('RESEND_API_KEY'),
+  MAIL_FROM: requireProcessEnv('MAIL_FROM'),
   FRONT_URL: requireProcessEnv('FRONT_URL'),
   FRONT_BACKOFFICE_URL: requireProcessEnv('FRONT_BACKOFFICE_URL'),
   SHOULD_SEND_EMAILS:

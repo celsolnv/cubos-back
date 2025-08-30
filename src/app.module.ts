@@ -9,6 +9,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppExceptionFilter } from './exception-filters/app-exception/app-exception.filter';
 import { MoviesModule } from './modules/movies/movies.module';
 import { S3Module } from './modules/s3/s3.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -37,6 +38,13 @@ import { S3Module } from './modules/s3/s3.module';
               ? 'migrations_test'
               : 'db_migrations_typeorm',
         };
+      },
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
+        password: process.env.REDIS_PASSWORD,
       },
     }),
     AuthModule,
