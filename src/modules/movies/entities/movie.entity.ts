@@ -2,6 +2,7 @@ import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { CreateMovieDto } from '../dto/create-movie.dto';
 import { UpdateMovieDto } from '../dto/update-movie.dto';
 import { MovieStatus, MovieGenre } from '../constants';
+import { ColumnNumericTransformer } from '@/utils/helpers/columnNumericTransformer';
 
 @Entity('movies')
 export class Movie {
@@ -47,6 +48,7 @@ export class Movie {
     precision: 15,
     scale: 2,
     nullable: true,
+    transformer: new ColumnNumericTransformer(),
   })
   budget?: number;
 
@@ -55,6 +57,7 @@ export class Movie {
     precision: 15,
     scale: 2,
     nullable: true,
+    transformer: new ColumnNumericTransformer(),
   })
   revenue?: number;
 
@@ -110,12 +113,14 @@ export class Movie {
   @Column({
     type: 'bigint',
     nullable: true,
+    transformer: new ColumnNumericTransformer(),
   })
   popularity?: number;
 
   @Column({
     type: 'bigint',
     nullable: true,
+    transformer: new ColumnNumericTransformer(),
   })
   votes?: number;
 

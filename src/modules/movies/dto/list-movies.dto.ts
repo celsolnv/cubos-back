@@ -5,10 +5,13 @@ import {
   Min,
   Max,
   IsEnum,
+  IsDateString,
+  IsArray,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from 'src/utils/pagination/dto/pagination.dto';
 import { MovieStatus, MovieGenre } from '../constants';
+import { Transform, Type } from 'class-transformer';
 
 export class ListAllMoviesDto extends PaginationDto {
   @ApiPropertyOptional({
@@ -29,13 +32,16 @@ export class ListAllMoviesDto extends PaginationDto {
   status?: MovieStatus;
 
   @ApiPropertyOptional({
-    description: 'Filtrar por gênero',
-    example: MovieGenre.ACTION,
+    description: 'Filtrar por gêneros',
+    example: [MovieGenre.ACTION, MovieGenre.ADVENTURE],
     enum: MovieGenre,
+    isArray: true,
   })
   @IsOptional()
-  @IsEnum(MovieGenre)
-  genre?: MovieGenre;
+  @IsArray()
+  @IsEnum(MovieGenre, { each: true })
+  @Type(() => String)
+  genres?: MovieGenre[];
 
   @ApiPropertyOptional({
     description: 'Filtrar por diretor',
@@ -44,16 +50,6 @@ export class ListAllMoviesDto extends PaginationDto {
   @IsOptional()
   @IsString()
   director?: string;
-
-  @ApiPropertyOptional({
-    description: 'Filtrar por ano de lançamento',
-    example: 2019,
-  })
-  @IsOptional()
-  @IsNumber()
-  @Min(1900)
-  @Max(new Date().getFullYear())
-  year?: number;
 
   @ApiPropertyOptional({
     description: 'Filtrar por avaliação mínima',
@@ -87,7 +83,8 @@ export class ListAllMoviesDto extends PaginationDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  minDuration?: number;
+  @Transform(({ value }) => parseInt(value))
+  min_duration?: number;
 
   @ApiPropertyOptional({
     description: 'Filtrar por duração máxima em minutos',
@@ -97,5 +94,24 @@ export class ListAllMoviesDto extends PaginationDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  maxDuration?: number;
+  @Transform(({ value }) => parseInt(value))
+  max_duration?: number;
+
+  @ApiPropertyOptional({
+    description:
+      'Data inicial para filtrar por data de lançamento (ISO date string)',
+    example: '2019-01-01',
+  })
+  @IsOptional()
+  @IsDateString()
+  initial_date?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Data final para filtrar por data de lançamento (ISO date string)',
+    example: '2019-12-31',
+  })
+  @IsOptional()
+  @IsDateString()
+  end_date?: string;
 }

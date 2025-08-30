@@ -146,6 +146,19 @@ export class MoviesController {
     description: 'Usuário não autenticado',
   })
   async findAll(@Req() req: Request, @Query() params: ListAllMoviesDto) {
+    // Transformar genres se vier como genres[0], genres[1], etc.
+    if (req.query) {
+      const genres: string[] = [];
+      Object.keys(req.query).forEach((key) => {
+        if (key.startsWith('genres[')) {
+          const value = req.query[key] as string;
+          if (value) genres.push(value);
+        }
+      });
+      if (genres.length > 0) {
+        params.genres = genres as any;
+      }
+    }
     const data = await this.movieService.listAll(params);
 
     return PaginationWrapper({

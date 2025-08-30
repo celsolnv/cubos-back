@@ -27,21 +27,64 @@ export class MoviesTypeormRepository extends AbstractMoviesRepository {
     limit,
     order = 'desc',
     query,
-    isActive,
+    min_duration,
+    max_duration,
+    genres,
+    initial_date,
+    end_date,
   }: ListAllMoviesDto) {
     const movieQb = this.moviesRepository.createQueryBuilder('movie');
-
-    if (isActive !== undefined) {
-      movieQb.andWhere('movie.isActive = :isActive', {
-        isActive,
-      });
-    }
 
     if (query) {
       movieQb.andWhere('movie.name ILIKE :query', {
         query: `%${query}%`,
       });
     }
+    if (min_duration) {
+      movieQb.andWhere('movie.durationMinutes >= :min_duration', {
+        min_duration,
+      });
+    }
+    if (max_duration) {
+      movieQb.andWhere('movie.durationMinutes <= :max_duration', {
+        max_duration,
+      });
+    }
+    if (genres && genres.length > 0) {
+      if (genres.length === 1) {
+        movieQb.andWhere('movie.genres @> ARRAY[:genre]::movie_genre_enum[]', {
+          genre: genres[0],
+        });
+      } else {
+        const genrePlaceholders = genres
+          .map((_, index) => `:genre${index}`)
+          .join(',');
+        const genreParams = genres.reduce(
+          (acc, genre, index) => {
+            acc[`genre${index}`] = genre;
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+
+        movieQb.andWhere(
+          `movie.genres && ARRAY[${genrePlaceholders}]::movie_genre_enum[]`,
+          genreParams,
+        );
+      }
+    }
+
+    if (initial_date) {
+      movieQb.andWhere('movie.release_date >= :initial_date::date', {
+        initial_date,
+      });
+    }
+    if (end_date) {
+      movieQb.andWhere('movie.release_date <= :end_date::date', {
+        end_date,
+      });
+    }
+
     if (page && limit) {
       movieQb.skip((page - 1) * limit);
       movieQb.take(limit);
