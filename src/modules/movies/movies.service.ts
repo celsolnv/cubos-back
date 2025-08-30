@@ -120,4 +120,8 @@ export class MoviesService {
     const { url, expiresAt } = await this.s3Service.getPresignedUrl(key);
     return { url, key, expiresAt };
   }
+
+  async findMoviesReleasingSoon(days: number): Promise<Movie[]> {
+    return this.movieRepository.findMoviesReleasingSoon(days);
+  }
 }

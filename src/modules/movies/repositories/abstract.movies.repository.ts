@@ -11,4 +11,5 @@ export abstract class AbstractMoviesRepository {
   abstract listAll(
     ListAllMovieDto: ListAllMoviesDto,
   ): Promise<RepositoryListing<ListedMovieDto>>;
+  abstract findMoviesReleasingSoon(days: number): Promise<Movie[]>;
 }

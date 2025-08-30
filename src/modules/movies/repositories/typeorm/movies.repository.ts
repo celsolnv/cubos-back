@@ -1,10 +1,11 @@
-import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { Repository, EntityManager, DataSource, Between } from 'typeorm';
 import { Movie } from '../../entities/movie.entity';
 import { AbstractMoviesRepository } from '../abstract.movies.repository';
 import { ListAllMoviesDto } from '../../dto/list-movies.dto';
 import { ListedMovieDto } from '../../dto/listed-movie.dto';
 import { RepositoryListing } from 'src/types/modules/repository-listing-mode';
+import * as moment from 'moment';
 
 @Injectable()
 export class MoviesTypeormRepository extends AbstractMoviesRepository {
@@ -111,5 +112,16 @@ export class MoviesTypeormRepository extends AbstractMoviesRepository {
 
   async remove(id: string): Promise<void> {
     await this.moviesRepository.delete(id);
+  }
+
+  async findMoviesReleasingSoon(days: number): Promise<Movie[]> {
+    const today = moment().startOf('day');
+    const futureDate = moment().add(days, 'days').endOf('day');
+
+    return this.moviesRepository.find({
+      where: {
+        releaseDate: Between(today.toDate(), futureDate.toDate()),
+      },
+    });
   }
 }

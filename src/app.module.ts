@@ -9,7 +9,10 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppExceptionFilter } from './exception-filters/app-exception/app-exception.filter';
 import { MoviesModule } from './modules/movies/movies.module';
 import { S3Module } from './modules/s3/s3.module';
-import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './modules/tasks/tasks.service';
+import { TasksModule } from './modules/tasks/tasks.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -40,17 +43,13 @@ import { BullModule } from '@nestjs/bull';
         };
       },
     }),
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379,
-        password: process.env.REDIS_PASSWORD,
-      },
-    }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UserModule,
     S3Module,
     MoviesModule,
+    TasksModule,
+    NotificationsModule,
   ],
 
   providers: [
@@ -62,6 +61,7 @@ import { BullModule } from '@nestjs/bull';
       provide: APP_FILTER,
       useClass: AppExceptionFilter,
     },
+    TasksService,
   ],
 })
 export class AppModule {}
