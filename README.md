@@ -1,98 +1,166 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API de Gerenciamento de Filmes
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desenvolvida em NestJS para gerenciamento de filmes com autenticação, upload de arquivos e integração com S3.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tecnologias
 
-## Description
+- **Backend**: NestJS (Node.js)
+- **Database**: PostgreSQL com TypeORM
+- **Autenticação**: JWT
+- **Upload**: Multer + AWS S3
+- **Documentação**: Swagger/OpenAPI
+- **Validação**: class-validator + class-transformer
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Pré-requisitos
 
-## Project setup
+- Node.js (versão 16 ou superior)
+- PostgreSQL
+- Docker e Docker Compose (opcional)
+- Conta AWS com S3 configurado (para upload de arquivos)
 
+## 🛠️ Instalação
+
+1. **Clone o repositório**
 ```bash
-$ npm install
+git clone <url-do-repositorio>
+cd back
 ```
 
-## Compile and run the project
-
+2. **Instale as dependências**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
-
+3. **Configure as variáveis de ambiente**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+Edite o arquivo `.env` com suas configurações:
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=sua_senha
+DB_DATABASE=movies_db
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# JWT
+JWT_SECRET=seu_jwt_secret_super_seguro
+JWT_EXPIRES_IN=24h
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# AWS S3
+AWS_ACCESS_KEY_ID=sua_access_key
+AWS_SECRET_ACCESS_KEY=sua_secret_key
+AWS_REGION=sua_regiao
+AWS_S3_BUCKET=seu_bucket
 
-```bash
-$ npm install -g mau
-$ mau deploy
+# App
+PORT=3000
+NODE_ENV=development
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🗄️ Configuração do Banco de Dados
 
-## Resources
+### Opção 1: Docker (Recomendado)
+```bash
+docker-compose up -d
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Opção 2: PostgreSQL local
+1. Instale o PostgreSQL
+2. Crie um banco de dados chamado `movies_db`
+3. Execute as migrações:
+```bash
+npm run mg-run
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🚀 Executando o Projeto
 
-## Support
+### Desenvolvimento
+```bash
+npm run start:dev
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Produção
+```bash
+npm run build
+npm run start:prod
+```
 
-## Stay in touch
+## 📚 Documentação da API
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Após iniciar o projeto, acesse a documentação Swagger em:
+```
+http://localhost:3000/docs
+```
 
-## License
+## 🔐 Autenticação
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+A API usa JWT para autenticação. Para acessar endpoints protegidos:
+
+1. Faça login em `/auth/login`
+2. Use o token retornado no header: `Authorization: Bearer <token>`
+
+## 🎬 Endpoints Principais
+
+### Filmes
+- `GET /movies` - Listar filmes (com filtros)
+- `POST /movies` - Criar filme
+- `GET /movies/:id` - Buscar filme por ID
+- `PUT /movies/:id` - Atualizar filme
+- `DELETE /movies/:id` - Excluir filme
+
+### Usuários
+- `POST /auth/register` - Registrar usuário
+- `POST /auth/login` - Login
+- `GET /users/profile` - Perfil do usuário
+
+### Upload
+- `POST /s3/upload` - Upload de arquivos para S3
+
+## 🔍 Filtros Disponíveis
+
+### Listagem de Filmes
+- `name` - Nome do filme
+- `genres` - Gêneros (ex: `genres[0]=Ação&genres[1]=Aventura`)
+- `director` - Diretor
+- `minRating` / `maxRating` - Avaliação (0.0 a 10.0)
+- `minDuration` / `maxDuration` - Duração em minutos
+- `initial_date` / `end_date` - Data de lançamento (YYYY-MM-DD)
+- `page` / `limit` - Paginação
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── modules/
+│   ├── auth/          # Autenticação e autorização
+│   ├── movies/        # Gerenciamento de filmes
+│   ├── users/         # Gerenciamento de usuários
+│   ├── s3/            # Upload para AWS S3
+│   └── mail/          # Serviços de email
+├── common/             # Interceptors, filtros, etc.
+├── config/             # Configurações da aplicação
+├── infra/              # Infraestrutura (database, etc.)
+└── utils/              # Utilitários e helpers
+```
+
+## 🐛 Troubleshooting
+
+### Erro de conexão com banco
+- Verifique se o PostgreSQL está rodando
+- Confirme as credenciais no `.env`
+- Execute `npm run mg-run`
+
+### Erro de upload para S3
+- Verifique as credenciais AWS no `.env`
+- Confirme se o bucket existe e tem as permissões corretas
+
+### Erro de validação
+- Verifique se todos os campos obrigatórios estão sendo enviados
+- Confirme os tipos de dados (ex: datas no formato YYYY-MM-DD)
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT.
