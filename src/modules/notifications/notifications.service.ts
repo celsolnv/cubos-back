@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
 import { Movie } from '../movies';
 import { User } from '../users/entities/user.entity';
-import * as moment from 'moment';
+import { format } from 'date-fns';
 
 @Injectable()
 export class NotificationService {
@@ -11,7 +11,7 @@ export class NotificationService {
   constructor(@Inject('RESEND_CLIENT') private readonly resend: Resend) {}
 
   async sendUpcomingMovieEmail(user: User, movie: Movie): Promise<void> {
-    const releaseDate = moment(movie.releaseDate).format('DD/MM/YYYY');
+    const releaseDate = format(new Date(movie.releaseDate), 'dd/MM/yyyy');
 
     try {
       const { data, error } = await this.resend.emails.send({

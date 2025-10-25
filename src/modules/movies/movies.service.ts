@@ -10,7 +10,7 @@ import {
   FindServiceResult,
 } from 'src/types/modules/find-service-mode';
 import { S3Service } from '../s3/s3.service';
-import * as moment from 'moment';
+import { isBefore } from 'date-fns';
 import { RepositoryListing } from '@/types/modules/repository-listing-mode';
 import { ListedMovieDto } from './dto';
 @Injectable()
@@ -42,8 +42,7 @@ export class MoviesService {
     const movies = query[0].map(async (movie) => {
       if (movie.bannerKey) {
         const hasExpired =
-          movie.bannerExpiresAt &&
-          moment(movie.bannerExpiresAt).isBefore(moment());
+          movie.bannerExpiresAt && isBefore(movie.bannerExpiresAt, new Date());
         if (hasExpired) {
           const { url, expiresAt } = await this.s3Service.getPresignedUrl(
             movie.bannerKey,

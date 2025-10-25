@@ -1,8 +1,8 @@
 export enum MovieStatus {
-  RELEASED = 'lançado',
-  IN_PRODUCTION = 'em produção',
-  POST_PRODUCTION = 'pós-produção',
-  PRE_PRODUCTION = 'pré-produção',
-  CANCELLED = 'cancelado',
-  ON_HOLD = 'em espera',
+  RELEASED = 'RELEASED',
+  IN_PRODUCTION = 'IN_PRODUCTION',
+  POST_PRODUCTION = 'POST_PRODUCTION',
+  PRE_PRODUCTION = 'PRE_PRODUCTION',
+  CANCELLED = 'CANCELLED',
+  ON_HOLD = 'ON_HOLD',
 }

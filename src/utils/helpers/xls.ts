@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import moment from 'moment';
+import { parse, isValid } from 'date-fns';
 import { convertMoneyToNumber } from './func';
 
 export function validateRequiredFields(
@@ -29,8 +29,8 @@ export function validateDateFields(
 ) {
   const errors = dateFields
     .filter((field) => {
-      const date = moment(row[field], dateFormat, true);
-      return !date.isValid();
+      const date = parse(row[field], dateFormat, new Date());
+      return !isValid(date);
     })
     .map(
       (field) =>

@@ -7,7 +7,7 @@ import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
 import { AbstractLoginAttemptRepository } from './repositories/abstract.login-attempts.repository';
 import { LoginAttempt } from './entities/login-attempts.entity';
-import moment from 'moment';
+import { differenceInMinutes } from 'date-fns';
 
 @Injectable()
 export class AuthService {
@@ -63,9 +63,9 @@ export class AuthService {
     }
 
     if (userAttempt.blockedUntil && userAttempt.blockedUntil > new Date()) {
-      const timeToUnlock = moment(userAttempt.blockedUntil).diff(
+      const timeToUnlock = differenceInMinutes(
+        userAttempt.blockedUntil,
         new Date(),
-        'minutes',
       );
       throw new AppException(
         `Usuário bloqueado por excesso de tentativas! Tente novamente em ${timeToUnlock} minutos `,

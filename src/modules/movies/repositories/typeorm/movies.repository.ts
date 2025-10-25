@@ -5,7 +5,7 @@ import { AbstractMoviesRepository } from '../abstract.movies.repository';
 import { ListAllMoviesDto } from '../../dto/list-movies.dto';
 import { ListedMovieDto } from '../../dto/listed-movie.dto';
 import { RepositoryListing } from 'src/types/modules/repository-listing-mode';
-import * as moment from 'moment';
+import { startOfDay, addDays, endOfDay } from 'date-fns';
 
 @Injectable()
 export class MoviesTypeormRepository extends AbstractMoviesRepository {
@@ -115,12 +115,12 @@ export class MoviesTypeormRepository extends AbstractMoviesRepository {
   }
 
   async findMoviesReleasingSoon(days: number): Promise<Movie[]> {
-    const today = moment().startOf('day');
-    const futureDate = moment().add(days, 'days').endOf('day');
+    const today = startOfDay(new Date());
+    const futureDate = endOfDay(addDays(new Date(), days));
 
     return this.moviesRepository.find({
       where: {
-        releaseDate: Between(today.toDate(), futureDate.toDate()),
+        releaseDate: Between(today, futureDate),
       },
     });
   }

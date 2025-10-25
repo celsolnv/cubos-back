@@ -91,13 +91,13 @@ export class MoviesController {
     name: 'status',
     required: false,
     description: 'Filtrar por status do filme',
-    example: 'lançado',
+    example: 'RELEASED',
   })
   @ApiQuery({
     name: 'genre',
     required: false,
     description: 'Filtrar por gênero',
-    example: 'Ação',
+    example: 'ACTION',
   })
   @ApiQuery({
     name: 'director',
