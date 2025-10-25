@@ -4,6 +4,7 @@ import { UpdateMovieDto } from '../dto/update-movie.dto';
 import { MovieStatus, MovieGenre } from '../constants';
 import { ColumnNumericTransformer } from '@/utils/helpers/columnNumericTransformer';
 
+// TODO: Relação entre Filme e Usuário: seria interessante que cada filme tivesse vínculo com quem o criou, restringindo listagem apenas ao criador.
 @Entity('movies')
 export class Movie {
   @PrimaryGeneratedColumn('uuid')
